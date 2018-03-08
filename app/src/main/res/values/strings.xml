@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Clicker</string>
+    <string name="clockStart">0:00</string>
+    <string name="counterStart">000</string>
+    <string name="counterBtn">+</string>
+    <string name="textAlign">center</string>
+</resources>
