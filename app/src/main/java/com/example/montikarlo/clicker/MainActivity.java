@@ -1,5 +1,6 @@
 package com.example.montikarlo.clicker;
 
+import android.content.Intent;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements NumberPicker.OnValueChangeListener {
@@ -20,6 +22,9 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     NumberPicker numBreakSec;
     NumberPicker roundCount;
     TextView displayTotal;
+    Button compBtn;
+    public long totalTime;
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +51,9 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
         numRoundMin.setValue(0);
         numRoundMin.setWrapSelectorWheel(true);
 
-        numRoundSec.setMinValue(00);
+        numRoundSec.setMinValue(0);
         numRoundSec.setMaxValue(59);
-        numRoundSec.setValue(00);
+        numRoundSec.setValue(0);
         numRoundSec.setWrapSelectorWheel(false);
 
         // Break NumberPicker Values ---------------------------------------
@@ -57,9 +62,9 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
         numBreakMin.setValue(0);
         numBreakMin.setWrapSelectorWheel(false);
 
-        numBreakSec.setMinValue(00);
+        numBreakSec.setMinValue(0);
         numBreakSec.setMaxValue(59);
-        numBreakSec.setValue(00);
+        numBreakSec.setValue(0);
         numBreakSec.setWrapSelectorWheel(false);
 
         // Round Counter NumberPicker Values
@@ -67,9 +72,6 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
         roundCount.setMaxValue(12);
         roundCount.setValue(0);
         roundCount.setWrapSelectorWheel(true);
-
-
-
 
         displayTotal = findViewById(R.id.totalDisplay);
 
@@ -88,38 +90,119 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
             }
         });
         */
+
+        compBtn = findViewById(R.id.compBtn);
+        intent = new Intent(this, TimerActivity.class);
+
+
+        compBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                intent.putExtra("total",totalTime);
+                startActivity(intent);
+            }
+        });
+
     }
 
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+
+        int rdCt = roundCount.getValue();
+        int rdMin = numRoundMin.getValue() * rdCt;
+        int rdSec = numRoundSec.getValue() * rdCt;
+        int brkMin = numBreakMin.getValue() * rdCt;
+        int brkSec = numBreakSec.getValue() * rdCt;
+
+        /*long totalTemp = ( (rdMin+rdSec+brkMin+brkSec) *rdCt);
+
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.MINUTE, rdMin);
+        c.set(Calendar.SECOND, rdSec);
+        c.set(Calendar.MINUTE, brkMin);
+        c.set(Calendar.SECOND, brkSec);*/
+
+        long totalSeconds = TimeUnit.SECONDS.toMillis(rdSec+brkSec);
+        long totalMinutes = TimeUnit.MINUTES.toMillis(rdMin+brkMin);
+        totalTime = totalMinutes + totalSeconds;
+
         switch (picker.getId()){
             case R.id.numberPicker_min:
-                displayTotal.setText(String.valueOf(((numRoundMin.getValue() +
-                        numRoundSec.getValue() + numBreakMin.getValue() +
-                        numBreakSec.getValue())* roundCount.getValue())));
+                displayTotal.setText(String.format("%02d:%02d:%02d",
+                        TimeUnit.MILLISECONDS.toHours(totalTime),
+                        TimeUnit.MILLISECONDS.toMinutes(totalTime)
+                                - TimeUnit.HOURS.toMinutes(
+                                TimeUnit.MILLISECONDS.toHours(totalTime)),
+                        TimeUnit.MILLISECONDS.toSeconds(totalTime)
+                                - TimeUnit.MINUTES.toSeconds(
+                                TimeUnit.MILLISECONDS.toMinutes(totalTime))));
                 break;
             case R.id.numberPicker_sec:
-                displayTotal.setText(String.valueOf(((numRoundMin.getValue() +
-                        numRoundSec.getValue() + numBreakMin.getValue() +
-                        numBreakSec.getValue())* roundCount.getValue())));
+                displayTotal.setText(String.format("%02d:%02d:%02d",
+                        TimeUnit.MILLISECONDS.toHours(totalTime),
+                        TimeUnit.MILLISECONDS.toMinutes(totalTime)
+                                - TimeUnit.HOURS.toMinutes(
+                                TimeUnit.MILLISECONDS.toHours(totalTime)),
+                        TimeUnit.MILLISECONDS.toSeconds(totalTime)
+                                - TimeUnit.MINUTES.toSeconds(
+                                TimeUnit.MILLISECONDS.toMinutes(totalTime))));
                 break;
             case R.id.breakPicker_min:
-                displayTotal.setText(String.valueOf(((numRoundMin.getValue() +
-                        numRoundSec.getValue() + numBreakMin.getValue() +
-                        numBreakSec.getValue())* roundCount.getValue())));
+                displayTotal.setText(String.format("%02d:%02d:%02d",
+                        TimeUnit.MILLISECONDS.toHours(totalTime),
+                        TimeUnit.MILLISECONDS.toMinutes(totalTime)
+                                - TimeUnit.HOURS.toMinutes(
+                                TimeUnit.MILLISECONDS.toHours(totalTime)),
+                        TimeUnit.MILLISECONDS.toSeconds(totalTime)
+                                - TimeUnit.MINUTES.toSeconds(
+                                TimeUnit.MILLISECONDS.toMinutes(totalTime))));
                 break;
             case R.id.breakPicker_sec:
-                displayTotal.setText(String.valueOf(((numRoundMin.getValue() +
-                        numRoundSec.getValue() + numBreakMin.getValue() +
-                        numBreakSec.getValue())* roundCount.getValue())));
+                displayTotal.setText(String.format("%02d:%02d:%02d",
+                        TimeUnit.MILLISECONDS.toHours(totalTime),
+                        TimeUnit.MILLISECONDS.toMinutes(totalTime)
+                                - TimeUnit.HOURS.toMinutes(
+                                TimeUnit.MILLISECONDS.toHours(totalTime)),
+                        TimeUnit.MILLISECONDS.toSeconds(totalTime)
+                                - TimeUnit.MINUTES.toSeconds(
+                                TimeUnit.MILLISECONDS.toMinutes(totalTime))));
                 break;
             case R.id.roundCountPicker:
-                displayTotal.setText(String.valueOf(((numRoundMin.getValue() +
-                        numRoundSec.getValue() + numBreakMin.getValue() +
-                        numBreakSec.getValue())* roundCount.getValue())));
+                displayTotal.setText(String.format("%02d:%02d:%02d",
+                        TimeUnit.MILLISECONDS.toHours(totalTime),
+                        TimeUnit.MILLISECONDS.toMinutes(totalTime)
+                                - TimeUnit.HOURS.toMinutes(
+                                TimeUnit.MILLISECONDS.toHours(totalTime)),
+                        TimeUnit.MILLISECONDS.toSeconds(totalTime)
+                                - TimeUnit.MINUTES.toSeconds(
+                                TimeUnit.MILLISECONDS.toMinutes(totalTime))));
                 break;
             default:
                 break;
         }
+
+
+
+
+        /*switch (picker.getId()){
+            case R.id.numberPicker_min:
+                displayTotal.setText(String.valueOf( ( (rdMin+rdSec+brkMin+brkSec)* rdCt) ));
+                break;
+            case R.id.numberPicker_sec:
+                displayTotal.setText(String.valueOf(( (rdMin+rdSec+brkMin+brkSec)* rdCt)));
+                break;
+            case R.id.breakPicker_min:
+                displayTotal.setText(String.valueOf(( (rdMin+rdSec+brkMin+brkSec)* rdCt)));
+                break;
+            case R.id.breakPicker_sec:
+                displayTotal.setText(String.valueOf(( (rdMin+rdSec+brkMin+brkSec)* rdCt)));
+                break;
+            case R.id.roundCountPicker:
+                displayTotal.setText(String.valueOf(( (rdMin+rdSec+brkMin+brkSec)* rdCt)));
+                break;
+            default:
+                break;
+        }*/
     }
 }

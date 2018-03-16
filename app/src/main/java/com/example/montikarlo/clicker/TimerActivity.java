@@ -1,5 +1,6 @@
 package com.example.montikarlo.clicker;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
@@ -17,8 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class TimerActivity extends AppCompatActivity{
 
     int counterInt = 0;
-    EditText timer_ET;
-    int userTime = 0;
+
     TextView counterDisplay;
     TextView timerDisplay;
     private static final String FORMAT = "%02d:%02d:%02d";
@@ -28,14 +28,18 @@ public class TimerActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
 
-        timer_ET = findViewById(R.id.timerET);
+
         counterDisplay = findViewById(R.id.counterDisplay);
         timerDisplay = findViewById(R.id.timerDisplay);
 
         Button timerBtn = findViewById(R.id.timerBtn);
         Button counterBtn = findViewById(R.id.counterBtn);
 
-        userTime = Integer.parseInt(timer_ET.getText().toString());
+
+
+        Intent intent = getIntent();
+        final long userInput = intent.getLongExtra("total", 0);
+
 
 
 
@@ -44,15 +48,16 @@ public class TimerActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
 
-                new CountDownTimer(userTime, 1000){
+                new CountDownTimer(userInput, 1000){
                     public void onTick(long millisUntilFinished) {
                         timerDisplay.setText(""
                                 +String.format(FORMAT,
                                 TimeUnit.MILLISECONDS.toHours(millisUntilFinished),
-                                TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) -
-                                        TimeUnit.HOURS.toMinutes(
+                                TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)
+                                        - TimeUnit.HOURS.toMinutes(
                                                 TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
-                                TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
+                                TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished)
+                                        - TimeUnit.MINUTES.toSeconds(
                                         TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
                     }
 
